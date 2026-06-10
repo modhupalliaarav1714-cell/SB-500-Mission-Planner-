@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SB-500 Mission Planner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+font-family:Arial;
+max-width:700px;
+margin:auto;
+padding:20px;
+}
+
+input,select,button{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:15px;
+}
+
+.report{
+border:1px solid #ccc;
+padding:15px;
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>✈️ SB-500 Mission Planner</h1>
+
+<label>Passengers</label>
+<input id="passengers" type="number" value="200" max="200">
+
+<label>Distance (km)</label>
+<input id="distance" type="number" value="10000">
+
+<label>Fuel (tonnes)</label>
+<input id="fuel" type="number" value="130">
+
+<label>Weather</label>
+<select id="weather">
+<option>Clear</option>
+<option>Rain</option>
+<option>Snow</option>
+<option>Heavy Headwind</option>
+<option>Thunderstorm</option>
+</select>
+
+<button onclick="calculateMission()">
+Calculate Mission
+</button>
+
+<div class="report" id="report">
+Mission Report Appears Here
+</div>
+
+<script>
+
+function calculateMission(){
+
+let passengers=
+parseInt(document.getElementById("passengers").value);
+
+let distance=
+parseFloat(document.getElementById("distance").value);
+
+let fuel=
+parseFloat(document.getElementById("fuel").value);
+
+let weather=
+document.getElementById("weather").value;
+
+let penalty=0;
+
+if(weather==="Rain") penalty=0.02;
+if(weather==="Snow") penalty=0.04;
+if(weather==="Heavy Headwind") penalty=0.08;
+if(weather==="Thunderstorm") penalty=0.12;
+
+let fuelNeeded=
+distance*0.013*(1+penalty);
+
+let fuelRemaining=
+fuel-fuelNeeded;
+
+let status=
+fuelRemaining>=0
+?
+"MISSION POSSIBLE"
+:
+"INSUFFICIENT FUEL";
+
+document.getElementById("report").innerHTML=
+`
+<h2>Mission Report</h2>
+
+Aircraft: SB-500<br>
+Passengers: ${passengers}<br>
+Distance: ${distance} km<br>
+Weather: ${weather}<br>
+Fuel Needed: ${fuelNeeded.toFixed(2)} t<br>
+Fuel Remaining: ${fuelRemaining.toFixed(2)} t<br>
+Status: ${status}
+`;
+}
+
+</script>
+
+</body>
+</html>
