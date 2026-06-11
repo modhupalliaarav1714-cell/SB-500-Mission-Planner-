@@ -233,3 +233,79 @@ NOMINAL
 </div>
 
 <script>
+function calculateMission(){
+
+let passengers =
+parseInt(document.getElementById("passengers").value);
+
+let distance =
+parseFloat(document.getElementById("distance").value);
+
+let fuel =
+parseFloat(document.getElementById("fuel").value);
+
+let weather =
+document.getElementById("weather").value;
+
+let weatherPenalty = 0;
+
+if(weather==="Rain") weatherPenalty=0.02;
+if(weather==="Snow") weatherPenalty=0.04;
+if(weather==="Heavy Headwind") weatherPenalty=0.08;
+if(weather==="Thunderstorm") weatherPenalty=0.12;
+
+let fuelNeeded =
+distance * 0.013 * (1 + weatherPenalty);
+
+let fuelRemaining =
+fuel - fuelNeeded;
+
+let fuelMargin =
+(fuelRemaining / fuel) * 100;
+
+let readiness = 100;
+
+if(fuelRemaining < 20)
+readiness -= 15;
+
+if(weather==="Heavy Headwind")
+readiness -= 10;
+
+if(weather==="Thunderstorm")
+readiness -= 20;
+
+if(passengers > 190)
+readiness -= 5;
+
+if(readiness < 0)
+readiness = 0;
+
+let risk = "LOW";
+
+if(readiness < 85)
+risk = "MEDIUM";
+
+if(readiness < 70)
+risk = "HIGH";
+
+let health = "NOMINAL";
+
+if(risk==="MEDIUM")
+health = "CAUTION";
+
+if(risk==="HIGH")
+health = "WARNING";
+
+document.getElementById("readiness").innerText =
+readiness.toFixed(0) + "%";
+
+document.getElementById("fuelMargin").innerText =
+fuelMargin.toFixed(1) + "%";
+
+document.getElementById("riskLevel").innerText =
+risk;
+
+document.getElementById("systemHealth").innerText =
+health;
+
+}
