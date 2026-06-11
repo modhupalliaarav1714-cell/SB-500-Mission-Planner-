@@ -1,114 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SB-500 Mission Planner</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+
+:root{
+--background:#0A0A0A;
+--panel:#111416;
+--panel-dark:#0D0F10;
+--glass:#171D1D;
+--border:#263B31;
+--accent:#7FB58E;
+--accent-strong:#A6D7AF;
+--text:#EDF4EF;
+--muted:#87958D;
+--warning:#D4B76A;
+--danger:#D96B6B;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-font-family:Arial;
-max-width:700px;
-margin:auto;
+background:var(--background);
+color:var(--text);
+font-family:Arial,sans-serif;
 padding:20px;
 }
 
-input,select,button{
-width:100%;
-padding:10px;
-margin-top:8px;
-margin-bottom:15px;
+.header{
+margin-bottom:20px;
 }
 
-.report{
-border:1px solid #ccc;
-padding:15px;
+.title{
+font-size:32px;
+font-weight:bold;
+color:var(--accent);
+}
+
+.subtitle{
+color:var(--muted);
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.panel{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:14px;
+padding:20px;
+}
+
+.panel h2{
+margin-bottom:15px;
+color:var(--accent);
+}
+
+label{
+display:block;
+margin-top:10px;
+margin-bottom:6px;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+background:var(--panel-dark);
+border:1px solid var(--border);
+border-radius:8px;
+color:white;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:8px;
+background:var(--accent);
+font-weight:bold;
+cursor:pointer;
+}
+
+.metric{
+background:var(--glass);
+padding:12px;
+border-radius:10px;
+margin-bottom:12px;
+}
+
+.metric-title{
+font-size:14px;
+color:var(--muted);
+}
+
+.metric-value{
+font-size:24px;
+font-weight:bold;
+margin-top:4px;
+}
+
+.specs{
 margin-top:20px;
 }
+
+.specs p{
+margin-bottom:8px;
+}
+
+@media(max-width:900px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>✈️ SB-500 Mission Planner</h1>
+<div class="header">
 
-<label>Passengers</label>
+<div class="title">
+✈️ SB-500 Mission Planner
+</div>
+
+<div class="subtitle">
+Mission Operations Dashboard
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="panel">
+
+<h2>Mission Inputs</h2>
+
+<label>Passenger Count</label>
 <input id="passengers" type="number" value="200" max="200">
 
-<label>Distance (km)</label>
+<label>Route Distance (km)</label>
 <input id="distance" type="number" value="10000">
 
-<label>Fuel (tonnes)</label>
+<label>Fuel Loaded (tonnes)</label>
 <input id="fuel" type="number" value="130">
 
 <label>Weather</label>
 <select id="weather">
+
 <option>Clear</option>
 <option>Rain</option>
 <option>Snow</option>
 <option>Heavy Headwind</option>
 <option>Thunderstorm</option>
+
 </select>
 
 <button onclick="calculateMission()">
 Calculate Mission
 </button>
 
-<div class="report" id="report">
-Mission Report Appears Here
+</div>
+
+<div class="panel">
+
+<h2>Command Dashboard</h2>
+
+<div class="metric">
+<div class="metric-title">Readiness Score</div>
+<div class="metric-value" id="readiness">
+100%
+</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">Fuel Margin</div>
+<div class="metric-value" id="fuelMargin">
+0%
+</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">Risk Level</div>
+<div class="metric-value" id="riskLevel">
+LOW
+</div>
+</div>
+
+<div class="metric">
+<div class="metric-title">System Health</div>
+<div class="metric-value" id="systemHealth">
+NOMINAL
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="panel specs">
+
+<h2>SB-500 Aircraft Data</h2>
+
+<p>👥 Passenger Capacity: 200</p>
+<p>🚀 Cruise Speed: Mach 1.7</p>
+<p>🌍 Range: 10,000 km</p>
+<p>🎯 Stretch Goal: 11,000 km</p>
+<p>🏔️ Cruise Altitude: 65,000 ft</p>
+<p>⚖️ OEW: 115 t</p>
+<p>⚖️ MTOW: 275 t</p>
+<p>⛽ Fuel Capacity: 130 t</p>
+<p>🔥 Engines: 4 × Variable Cycle Engines</p>
+
 </div>
 
 <script>
-
-function calculateMission(){
-
-let passengers=
-parseInt(document.getElementById("passengers").value);
-
-let distance=
-parseFloat(document.getElementById("distance").value);
-
-let fuel=
-parseFloat(document.getElementById("fuel").value);
-
-let weather=
-document.getElementById("weather").value;
-
-let penalty=0;
-
-if(weather==="Rain") penalty=0.02;
-if(weather==="Snow") penalty=0.04;
-if(weather==="Heavy Headwind") penalty=0.08;
-if(weather==="Thunderstorm") penalty=0.12;
-
-let fuelNeeded=
-distance*0.013*(1+penalty);
-
-let fuelRemaining=
-fuel-fuelNeeded;
-
-let status=
-fuelRemaining>=0
-?
-"MISSION POSSIBLE"
-:
-"INSUFFICIENT FUEL";
-
-document.getElementById("report").innerHTML=
-`
-<h2>Mission Report</h2>
-
-Aircraft: SB-500<br>
-Passengers: ${passengers}<br>
-Distance: ${distance} km<br>
-Weather: ${weather}<br>
-Fuel Needed: ${fuelNeeded.toFixed(2)} t<br>
-Fuel Remaining: ${fuelRemaining.toFixed(2)} t<br>
-Status: ${status}
-`;
-}
-
-</script>
-
-</body>
-</html>
